@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--<external-path name="new.apk" path="" />-->
+    <external-path name="external_files" path="breakFast/FileDownload/"/>
+    <external-path name="new.apk" path="" />
+    <!-- paths这个元素内可以包含以下一个或多个，具体如下：-->
+    <files-path name="name" path="path" />
+    <!--物理路径相当于Context.getFilesDir() + /path/。-->
+    <cache-path name="name" path="path" />
+    <!--物理路径相当于Context.getCacheDir() + /path/。-->
+    <external-path name="name" path="path" />
+    <!--物理路径相当于Environment.getExternalStorageDirectory() + /path/。-->
+    <external-files-path name="name" path="path" />
+    <!--物理路径相当于Context.getExternalFilesDir(String) + /path/。-->
+    <external-cache-path name="name" path="path" />
+</paths>
