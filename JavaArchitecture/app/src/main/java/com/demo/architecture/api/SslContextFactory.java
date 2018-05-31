@@ -2,6 +2,7 @@ package com.demo.architecture.api;
 
 import com.demo.architecture.R;
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 import com.demo.architecture.utils.L;
 
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class SslContextFactory {
             TrustManagerFactory trustManager = TrustManagerFactory.getInstance(CLIENT_TRUST_MANAGER);
             //取得BKS密库实例
             KeyStore tks = KeyStore.getInstance(CLIENT_TRUST_KEYSTORE);
-            InputStream is = App.getApplication().getResources().openRawResource(R.raw.myyll_com_bundle);
+            InputStream is = ComponentHolder.getAppComponent().myApplication().getResources().openRawResource(R.raw.myyll_com_bundle);
             try {
                 tks.load(is, CLIENT_TRUST_PASSWORD.toCharArray());
             } catch (Exception e){

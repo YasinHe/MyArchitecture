@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 import com.demo.architecture.base.Constants;
 
 import java.io.ByteArrayOutputStream;
@@ -46,7 +47,7 @@ public final class CacheManager {
     }
 
     private CacheManager() {
-        File diskCacheDir = getDiskCacheDir(App.getApplication(), CACHE_DIR);
+        File diskCacheDir = getDiskCacheDir(ComponentHolder.getAppComponent().myApplication(), CACHE_DIR);
         if (!diskCacheDir.exists()) {
             boolean b = diskCacheDir.mkdirs();
             L.d(TAG, "!diskCacheDir.exists() --- diskCacheDir.mkdirs()=" + b);
@@ -54,7 +55,7 @@ public final class CacheManager {
         if (diskCacheDir.getUsableSpace() > DISK_CACHE_SIZE) {
             try {
                 mDiskLruCache = DiskLruCache.open(diskCacheDir,
-                        getAppVersion(App.getApplication()), 1/*一个key对应多少个文件*/, DISK_CACHE_SIZE);
+                        getAppVersion(ComponentHolder.getAppComponent().myApplication()), 1/*一个key对应多少个文件*/, DISK_CACHE_SIZE);
                 L.d(TAG, "mDiskLruCache created");
             } catch (IOException e) {
                 e.printStackTrace();

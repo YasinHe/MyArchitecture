@@ -14,6 +14,8 @@ import com.demo.architecture.utils.L;
 import com.demo.architecture.utils.T;
 import com.demo.architecture.utils.UiHelper;
 
+import javax.inject.Inject;
+
 /**
  * (可合理改动继承扩展)
  * Created by HeYingXin on 2017/2/16.

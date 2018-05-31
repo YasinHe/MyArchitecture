@@ -1,10 +1,20 @@
 package com.demo.architecture.base;
 
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.LongSparseArray;
 import android.view.View;
 
 import com.demo.architecture.api.HttpObservable;
 import com.demo.architecture.api.HttpObserver;
+import com.demo.architecture.injection.component.ConfigPersistentComponent;
+import com.demo.architecture.injection.component.DaggerConfigPersistentComponent;
+import com.demo.architecture.injection.component.FragmentComponent;
+import com.demo.architecture.injection.module.FragmentModule;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -25,6 +35,38 @@ public abstract class BaseFragment extends Fragment {
     private View rootView;
     private Unbinder mUnBinder;
 
+    protected FragmentComponent mFragmentComponent = null;
+    private long mFragmentId = 0;
+    private String KEY_FRAGMENT_ID = "KEY_FRAGMENT_ID";
+    private LongSparseArray<ConfigPersistentComponent> sComponentsArray = new LongSparseArray<ConfigPersistentComponent>();
+    private AtomicLong NEXT_ID = new AtomicLong(0);
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_FRAGMENT_ID, mFragmentId);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState==null||savedInstanceState.getLong(KEY_FRAGMENT_ID)==0){
+            mFragmentId = NEXT_ID.getAndIncrement();
+        }else {
+            mFragmentId = savedInstanceState.getLong(KEY_FRAGMENT_ID);
+        }
+        ConfigPersistentComponent configPersistentComponent;
+        if (sComponentsArray.get(mFragmentId) == null) {
+            configPersistentComponent = DaggerConfigPersistentComponent.builder()
+                    .appComponent(ComponentHolder.getAppComponent())
+                    .build();
+            sComponentsArray.put(mFragmentId, configPersistentComponent);
+        } else {
+            configPersistentComponent = sComponentsArray.get(mFragmentId);
+        }
+        mFragmentComponent = configPersistentComponent.fragmentComponent(new FragmentModule(this));
+    }
+
     protected void onViewCreated(View view){
         compositeDisposable = new CompositeDisposable();
         isPrepared = true;
@@ -37,6 +79,9 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        if (getActivity()==null||getActivity().isChangingConfigurations()) {
+            sComponentsArray.remove(mFragmentId);
+        }
         super.onDestroyView();
         compositeDisposable.clear();
         mUnBinder.unbind();

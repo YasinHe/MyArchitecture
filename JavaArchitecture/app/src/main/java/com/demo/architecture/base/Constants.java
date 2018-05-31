@@ -46,5 +46,6 @@ public class Constants {
          */
         public static final String PUSH_CARSH = Server.BaseServer +"A/";
 
+        public static final String UPDATE_APK = Server.BaseServer +"B/";
     }
 }

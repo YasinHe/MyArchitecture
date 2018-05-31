@@ -3,9 +3,21 @@ package com.demo.architecture.ui.main;
 import android.Manifest;
 import android.app.Activity;
 
+import com.demo.architecture.api.HttpObserver;
+import com.demo.architecture.api.QClitent;
+import com.demo.architecture.api.QHttpService;
+import com.demo.architecture.base.Constants;
+import com.demo.architecture.model.UpdateModel;
+import com.demo.architecture.utils.L;
+import com.demo.architecture.utils.UtilTool;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
-import com.demo.architecture.utils.L;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import io.reactivex.functions.Consumer;
 
@@ -13,6 +25,11 @@ import io.reactivex.functions.Consumer;
  * Created by HeYingXin on 2017/6/23.
  */
 public class MainPersenter extends MainContract.MyPresenter{
+
+    @Inject
+    public MainPersenter(){
+
+    }
 
     @Override
     public void requestPermissions() {
@@ -56,6 +73,28 @@ public class MainPersenter extends MainContract.MyPresenter{
 
     @Override
     public void updateAPK() {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("version", UtilTool.getCurrentVersionName(getMvpView().getContext()));
+            jsonObject.put("type", "android_user");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        java.util.Map<String, String> map = new HashMap<>();
+        map.put("json", jsonObject.toString());
+        addTask(QClitent.getInstance().create(QHttpService.class).
+                postUpdate(Constants.Http.UPDATE_APK, map), new HttpObserver<UpdateModel>() {
 
+            @Override
+            public void onFailure(Throwable e) {
+                L.e("updateAPK","更新接口请求失败");
+            }
+
+            @Override
+            public void onSuccess(UpdateModel value) {
+                getMvpView().updateApkSucc(value);
+            }
+
+        });
     }
 }

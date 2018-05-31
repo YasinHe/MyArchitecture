@@ -8,38 +8,41 @@ import android.text.TextUtils;
 
 import com.demo.architecture.db.DBImpl;
 import com.demo.architecture.db.DaoManager;
+import com.demo.architecture.injection.component.AppComponent;
+import com.demo.architecture.injection.component.DaggerAppComponent;
+import com.demo.architecture.injection.module.AppModule;
 import com.demo.architecture.utils.ActivityUtil;
 import com.demo.architecture.utils.SPUtils;
 import com.squareup.leakcanary.RefWatcher;
 
 /*SampleApplication*/
 public class App extends Application {
-    private static App instance;
     public int systemLive;
     //数据库
     public DBImpl mDB;
     //内存泄漏监测工具
     private RefWatcher mRefWatcher;
 
-    public static App getApplication() {
-        return instance;
-    }
-
     @Override
     public void onCreate() {
         super.onCreate();
         systemLive = 0;
-        instance = this;
         init();
     }
 
     private void init() {
         final App app = this;
+        //调试内存泄漏
 //        mRefWatcher = LeakCanary.install(this);
         //配置数据库
         mDB = new DBImpl(this);
+        //Carsh捕获上传
 //        CrashExecptionHandler.getInstance().init(this);
 //        CrashExecptionHandler.getInstance().sendPreviousReportsToServer();
+        AppComponent appComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this))
+                .build();
+        ComponentHolder.setAppComponent(appComponent);
     }
 
     public void exitSystemEnterLogin(Context context) {

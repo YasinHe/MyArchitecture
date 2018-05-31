@@ -11,6 +11,7 @@ import android.os.StatFs;
 import android.util.Log;
 
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 import com.demo.architecture.base.Constants;
 
 import java.io.BufferedOutputStream;
@@ -39,7 +40,7 @@ public class FileManageUtils {
 
     private boolean isExistSDCard = false;
     // 应用文件路径 备份
-    private String APP_FILE_BACKUPS = App.getApplication().getCacheDir().toString() + File.separator
+    private String APP_FILE_BACKUPS = ComponentHolder.getAppComponent().myApplication().getCacheDir().toString() + File.separator
             + Constants.SystemConfig.APP_NAME + File.separator;
     // 应用文件路径 默认
     private String APP_FILE_DEFAULT = Environment.getExternalStorageDirectory().toString() + File.separator

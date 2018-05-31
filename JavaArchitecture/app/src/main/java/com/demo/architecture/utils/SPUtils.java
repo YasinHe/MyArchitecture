@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -31,7 +32,7 @@ public class SPUtils
 	public static void put(String key, Object object)
 	{
 
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sp.edit();
 
@@ -67,7 +68,7 @@ public class SPUtils
 	 */
 	public static Object get(String key, Object defaultObject)
 	{
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 
 		if (defaultObject instanceof String)
@@ -122,7 +123,7 @@ public class SPUtils
 	 */
 	public static void remove(String key)
 	{
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sp.edit();
 		editor.remove(key);
@@ -134,7 +135,7 @@ public class SPUtils
 	 */
 	public static void clear()
 	{
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = sp.edit();
 		editor.clear();
@@ -148,7 +149,7 @@ public class SPUtils
 	 */
 	public static boolean contains(String key)
 	{
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 		return sp.contains(key);
 	}
@@ -160,7 +161,7 @@ public class SPUtils
 	 */
 	public static Map<String, ?> getAll()
 	{
-		SharedPreferences sp = App.getApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
+		SharedPreferences sp = ComponentHolder.getAppComponent().myApplication().getApplicationContext().getSharedPreferences(FILE_NAME,
 				Context.MODE_PRIVATE);
 		return sp.getAll();
 	}

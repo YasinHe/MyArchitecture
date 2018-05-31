@@ -2,34 +2,30 @@ package com.demo.architecture.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.LongSparseArray;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.demo.architecture.customView.SwipeBackLayout;
-import com.demo.architecture.ui.main.MainActivity;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.demo.architecture.R;
 import com.demo.architecture.api.HttpObservable;
 import com.demo.architecture.api.HttpObserver;
+import com.demo.architecture.customView.SwipeBackLayout;
+import com.demo.architecture.injection.component.ActivityComponent;
+import com.demo.architecture.injection.component.ConfigPersistentComponent;
+import com.demo.architecture.injection.component.DaggerConfigPersistentComponent;
+import com.demo.architecture.injection.module.ActivityModule;
+import com.demo.architecture.ui.main.MainActivity;
 import com.demo.architecture.utils.ActivityUtil;
-import com.demo.architecture.utils.RxBus;
-import com.demo.architecture.utils.T;
 import com.demo.architecture.utils.UtilTool;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicLong;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -42,25 +38,51 @@ import io.reactivex.schedulers.Schedulers;
  * Created by HeYingXin on 2017/7/19.
  */
 public abstract class BaseActivity extends AppCompatActivity {
-
     protected Context mContext;
     protected CompositeDisposable compositeDisposable;
     //滑动关闭activity
     private SwipeBackLayout mSwipeBackLayout;
     private Unbinder mUnBinder;
 
+    private long mActivityId = 0;
+    private String KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID";
+    private AtomicLong NEXT_ID = new AtomicLong(0);
+    private LongSparseArray<ConfigPersistentComponent> sComponentsArray = new LongSparseArray<ConfigPersistentComponent>();
+    protected ActivityComponent activityComponent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
         compositeDisposable = new CompositeDisposable();
-        if (App.getApplication().systemLive == 0 && !(this instanceof MainActivity)) {
+        if (ComponentHolder.getAppComponent().myApplication().systemLive == 0 && !(this instanceof MainActivity)) {
             Intent intent = new Intent(mContext, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }
         ActivityUtil.getInstance().addActivity(this);
+        if(savedInstanceState==null||savedInstanceState.getLong(KEY_ACTIVITY_ID)==0){
+            mActivityId = NEXT_ID.getAndIncrement();
+        }else {
+            mActivityId = savedInstanceState.getLong(KEY_ACTIVITY_ID);
+        }
+        ConfigPersistentComponent configPersistentComponent;
+        if (sComponentsArray.get(mActivityId) == null) {
+            configPersistentComponent = DaggerConfigPersistentComponent.builder()
+                    .appComponent(ComponentHolder.getAppComponent())
+                    .build();
+            sComponentsArray.put(mActivityId, configPersistentComponent);
+        } else {
+            configPersistentComponent = sComponentsArray.get(mActivityId);
+        }
+        activityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
+        activityComponent.inject(this);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_ACTIVITY_ID, mActivityId);
     }
 
     @Override
@@ -120,119 +142,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setNavigationBarTintResource(R.drawable.bg_top_title);
             tintManager.setStatusBarTintDrawable(getResources().getDrawable(R.drawable.bg_top_title));
-
         }
-    }
-
-    public void setWindowLuceency(int color, final View view) {
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
-                try {
-                    Class decorViewClazz = Class.forName("com.android.internal.policy.DecorView");
-                    Field field = decorViewClazz.getDeclaredField("mSemiTransparentStatusBarColor");
-                    field.setAccessible(true);
-                    field.setInt(getWindow().getDecorView(), Color.TRANSPARENT);  //改为透明
-                } catch (Exception e) {e.printStackTrace();}
-            }
-            if(color!=-1)
-                window.setStatusBarColor(color);
-            ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
-            View mChildView = mContentView.getChildAt(0);
-            if (mChildView != null) {
-                ViewCompat.setFitsSystemWindows(mChildView, false);
-            }
-            readyView(view,color);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            ViewGroup mContentView = (ViewGroup) findViewById(Window.ID_ANDROID_CONTENT);
-            View statusBarView = mContentView.getChildAt(0);
-            if (statusBarView != null && statusBarView.getLayoutParams() != null && statusBarView.getLayoutParams().height == getStatusBarHeight(this)) {
-                mContentView.removeView(statusBarView);
-            }
-            if (mContentView.getChildAt(0) != null) {
-                ViewCompat.setFitsSystemWindows(mContentView.getChildAt(0), false);
-            }
-            readyView(view,color);
-        }
-    }
-
-    public void readyView(final View view,final int color) {
-        if(view==null){
-            return;
-        }
-        final int statusBarHeight = getStatusBarHeight(this.getBaseContext());
-        view.post(new Runnable() {
-            @Override
-            public void run() {
-                if (view.getLayoutParams() instanceof LinearLayout.LayoutParams) {
-                    LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
-                    layoutParams.height = layoutParams.height + statusBarHeight;
-                    if (color == -1) {
-
-                    } else if (color != getResources().getColor(R.color.tarn)) {
-                        view.setBackgroundColor(color);
-                    } else {
-                        view.setBackgroundResource(R.drawable.bg_top_title);
-                    }
-                    view.setLayoutParams(layoutParams);
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + statusBarHeight, view.getPaddingRight(), view.getPaddingBottom());
-                } else if (view.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                    layoutParams.height = layoutParams.height + statusBarHeight;
-                    if (color == -1) {
-
-                    } else if (color != getResources().getColor(R.color.tarn)) {
-                        view.setBackgroundColor(color);
-                    } else {
-                        view.setBackgroundResource(R.drawable.bg_top_title);
-                    }
-                    view.setLayoutParams(layoutParams);
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + statusBarHeight, view.getPaddingRight(), view.getPaddingBottom());
-                } else if (view.getLayoutParams() instanceof CoordinatorLayout.LayoutParams) {
-                    CoordinatorLayout.LayoutParams layoutParams = new CoordinatorLayout.LayoutParams
-                            (view.getWidth(), view.getHeight() + statusBarHeight);
-                    if (color == -1) {
-
-                    } else if (color != getResources().getColor(R.color.tarn)) {
-                        view.setBackgroundColor(color);
-                    } else {
-                        view.setBackgroundResource(R.drawable.bg_shop_top);
-                    }
-                    view.setLayoutParams(layoutParams);
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + statusBarHeight, view.getPaddingRight(), view.getPaddingBottom());
-                }else if (view.getLayoutParams() instanceof FrameLayout.LayoutParams) {
-                    FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    layoutParams.height = layoutParams.height + statusBarHeight;
-                    if (color == -1) {
-
-                    } else if (color != getResources().getColor(R.color.tarn)) {
-                        view.setBackgroundColor(color);
-                    } else {
-                        view.setBackgroundResource(R.drawable.bg_top_title);
-                    }
-                    view.setLayoutParams(layoutParams);
-                    view.setPadding(view.getPaddingLeft(), view.getPaddingTop() + statusBarHeight, view.getPaddingRight(), view.getPaddingBottom());
-                }
-            }
-        });
-    }
-
-    public int getStatusBarHeight(Context context) {
-        int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen",
-                "android");
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
-
-    public void setHighlight() {
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);   //应用运行时，保持屏幕高亮，不锁屏
     }
 
     @Override
@@ -258,6 +168,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         mUnBinder.unbind();
         compositeDisposable.clear();
+        if (!isChangingConfigurations()) {
+            sComponentsArray.remove(mActivityId);
+        }
         super.onDestroy();
     }
 

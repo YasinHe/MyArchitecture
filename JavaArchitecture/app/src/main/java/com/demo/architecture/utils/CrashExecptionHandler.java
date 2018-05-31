@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.demo.architecture.api.QClitent;
 import com.demo.architecture.api.QHttpService;
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 import com.demo.architecture.base.Constants;
 import com.demo.architecture.model.BaseModel;
 
@@ -99,7 +100,7 @@ public class CrashExecptionHandler implements Thread.UncaughtExceptionHandler {
                 e.printStackTrace();
             }
             //退出程序
-            App.getApplication().appExit();
+            ComponentHolder.getAppComponent().myApplication().appExit();
         }
 
     }

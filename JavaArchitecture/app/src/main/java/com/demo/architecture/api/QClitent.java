@@ -1,6 +1,7 @@
 package com.demo.architecture.api;
 
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 import com.demo.architecture.base.Constants;
 import com.demo.architecture.utils.L;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -71,8 +72,8 @@ public class QClitent {
         int size = 1024 * 1024 * 100;
         Cache cache = null;
         try {
-            if(App.getApplication()!=null) {
-                File cacheFile = new File(App.getApplication().getCacheDir(), "NewsOkHttpCache");
+            if(ComponentHolder.getAppComponent().myApplication()!=null) {
+                File cacheFile = new File(ComponentHolder.getAppComponent().myApplication().getCacheDir(), "NewsOkHttpCache");
                 cache = new Cache(cacheFile, size);
             }
         }catch (Exception e){

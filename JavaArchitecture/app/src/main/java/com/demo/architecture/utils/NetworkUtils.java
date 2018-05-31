@@ -5,6 +5,7 @@ import android.net.NetworkInfo;
 import android.telephony.TelephonyManager;
 
 import com.demo.architecture.base.App;
+import com.demo.architecture.base.ComponentHolder;
 
 /**
  * Created by HeYingXin on 2017/7/8.
@@ -28,8 +29,8 @@ public class NetworkUtils {
      */
     public static boolean isNetworkAvailable() {
         try {
-            ConnectivityManager connectivity = (ConnectivityManager) App.getApplication()
-                    .getSystemService(App.getApplication().CONNECTIVITY_SERVICE);
+            ConnectivityManager connectivity = (ConnectivityManager) ComponentHolder.getAppComponent().myApplication()
+                    .getSystemService(ComponentHolder.getAppComponent().myApplication().CONNECTIVITY_SERVICE);
             if (connectivity == null) {
                 return false;
             } else {
@@ -53,7 +54,8 @@ public class NetworkUtils {
      */
     public static int getNetworkState() {
         //获取系统的网络服务
-        ConnectivityManager connManager = (ConnectivityManager) App.getApplication().getSystemService(App.getApplication().CONNECTIVITY_SERVICE);
+        ConnectivityManager connManager = (ConnectivityManager) ComponentHolder.getAppComponent().myApplication()
+                .getSystemService(ComponentHolder.getAppComponent().myApplication().CONNECTIVITY_SERVICE);
         //如果当前没有网络
         if (null == connManager)
             return NETWORN_NONE;

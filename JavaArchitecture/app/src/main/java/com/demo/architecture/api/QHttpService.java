@@ -1,6 +1,7 @@
 package com.demo.architecture.api;
 
 import com.demo.architecture.model.BaseModel;
+import com.demo.architecture.model.UpdateModel;
 
 import java.util.Map;
 
@@ -34,4 +35,10 @@ public interface QHttpService {
     @POST
     Observable<BaseModel> postCrash(@Url String httpUrl, @Field("content") String content, @Field("device") String device);
 
+    /**
+     * 版本更新
+     */
+    @FormUrlEncoded
+    @POST
+    Observable<UpdateModel> postUpdate(@Url String httpUrl, @FieldMap Map<String, String> params);
 }
