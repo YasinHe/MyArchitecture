@@ -9,15 +9,18 @@ import android.view.View;
 import com.demo.architecture.utils.L;
 import com.demo.architecture.utils.T;
 
+import javax.inject.Inject;
+
 /**(可合理改动继承扩展)
  * Created by HeYingXin on 2017/2/20.
  */
 public abstract class BaseMvpFragment<P extends Presenter> extends BaseFragment implements MvpView{
 
+    @Inject
     public P mPresenter;
 
     protected void onViewCreated(View view){
-        mPresenter = getmPresenter();
+        getmPresenter();
         if (mPresenter != null)mPresenter.attachView(this);
         super.onViewCreated(view);
     }
@@ -25,7 +28,7 @@ public abstract class BaseMvpFragment<P extends Presenter> extends BaseFragment 
     /**
      * 抽象出骨架
      */
-    protected abstract P getmPresenter();
+    protected abstract void getmPresenter();
 
     @Override
     public void onDestroyView() {

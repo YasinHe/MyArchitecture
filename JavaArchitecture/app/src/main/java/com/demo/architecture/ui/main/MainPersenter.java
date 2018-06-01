@@ -2,6 +2,7 @@ package com.demo.architecture.ui.main;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 
 import com.demo.architecture.api.HttpObserver;
 import com.demo.architecture.api.QClitent;
@@ -27,8 +28,7 @@ import io.reactivex.functions.Consumer;
 public class MainPersenter extends MainContract.MyPresenter{
 
     @Inject
-    public MainPersenter(){
-
+    public MainPersenter(String tag){//String tag
     }
 
     @Override

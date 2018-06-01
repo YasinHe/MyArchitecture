@@ -22,6 +22,7 @@ import javax.inject.Inject;
  */
 public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity implements MvpView {
 
+    @Inject
     public P mPresenter;
 
     @Override
@@ -31,7 +32,7 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
 
     @Override
     public void setContentView(@LayoutRes int resourceId){
-        mPresenter = getmPresenter();
+        getmPresenter();
         if (mPresenter != null)mPresenter.attachView(this);
         super.setContentView(resourceId);
     }
@@ -46,7 +47,7 @@ public abstract class BaseMvpActivity<P extends Presenter> extends BaseActivity 
     /**
      * 抽象出骨架
      */
-    protected abstract P getmPresenter();
+    protected abstract void getmPresenter();
 
     @Override
     @UiThread

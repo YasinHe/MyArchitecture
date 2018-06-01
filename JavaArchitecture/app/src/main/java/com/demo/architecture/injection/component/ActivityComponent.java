@@ -11,8 +11,8 @@ import dagger.Subcomponent;
  * Created by HeYingXin on 2018/4/17.
  */
 @PerActivity
-@Subcomponent(modules = ActivityModule.class)
+@Subcomponent(modules = {ActivityModule.class})
 public interface ActivityComponent {
     void inject(BaseActivity baseActivity);
-    void inject(MainActivity mainActivity);
+//    void inject(MainActivity mainActivity);
 }
