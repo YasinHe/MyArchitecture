@@ -1,11 +1,14 @@
 package com.demo.architecture.ui.main;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.demo.architecture.R;
 import com.demo.architecture.base.BaseMvpActivity;
+import com.demo.architecture.base.Constants;
 import com.demo.architecture.injection.component.DaggerMainActivityComponent;
 import com.demo.architecture.injection.module.MainActivityMoudel;
 import com.demo.architecture.model.UpdateModel;
@@ -13,11 +16,18 @@ import com.demo.architecture.model.UpdateModel;
 /**
  * Created by HeYingXin on 2018/1/19.
  */
+@Route(path = Constants.Route.MAIN_ACTIVITY, group = Constants.Route.GROUP_ONE)
 public class MainActivity extends BaseMvpActivity<MainPersenter> implements MainContract.View{
 
-    public static void startMainActivity(Context context) {
-        Intent intent = new Intent(context, MainActivity.class);
-        context.startActivity(intent);
+    public static void startMainActivity() {
+        ARouter.getInstance().build("/test/mainActivity",Constants.Route.GROUP_ONE).withLong("key1", 666L)
+                .withString("key3", "888").navigation();
+    }
+
+    public static void startMainActivity2(Activity activity) {
+        //直接通过所有拦截器并且制定requestCode
+        ARouter.getInstance().build("/test/mainActivity",Constants.Route.GROUP_ONE).withLong("key1", 666L)
+                .withString("key3", "888").greenChannel().navigation(activity,Constants.IntentRequest.MAIN_CODE);
     }
 
     @Override

@@ -190,7 +190,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         super.startActivity(intent);
         if(intent!=null&&intent.getComponent()!=null&&intent.getComponent().getClassName()!=null) {
             String className = intent.getComponent().getClassName();
-            if (className.contains("MainActivity") || className.contains("SplashActivity") || className.contains("GuideActivity")
+            if (className.contains("MAIN_ACTIVITY") || className.contains("SplashActivity") || className.contains("GuideActivity")
                     || className.contains("PersonalInfoActivity")  || className.contains("DynamicBrowseActivity")
                     || className.contains("DynamicVideoBrowseActivity")) {
                 overridePendingTransition(R.anim.zoomin,

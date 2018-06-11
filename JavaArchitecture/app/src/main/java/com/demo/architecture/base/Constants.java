@@ -24,7 +24,7 @@ public class Constants {
     }
 
     public static class SystemConfig{
-        public static final String APP_NAME = "Xiaou";
+        public static final String APP_NAME = "Text";
         public static boolean ISACTIVE = false;//是否在前台运行
     }
 
@@ -36,8 +36,19 @@ public class Constants {
     }
 
     public static class IntentRequest{
-        //首页搜索地址
-        public static final int Search_MAP = 1012;
+        //首页
+        public static final int MAIN_CODE = 1000;
+    }
+
+    public static class Route{
+        //main
+        public static final String MAIN_ACTIVITY = "/test/mainActivity";
+
+        //group
+        public static final String GROUP_ONE = "LEVEL1";
+        public static final String GROUP_TWO = "LEVEL2";
+        public static final String GROUP_THREE = "LEVEL3";
+
     }
 
     public static class Http{

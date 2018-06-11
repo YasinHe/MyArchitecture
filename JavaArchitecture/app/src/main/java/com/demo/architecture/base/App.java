@@ -6,14 +6,19 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.text.TextUtils;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.demo.architecture.db.DBImpl;
 import com.demo.architecture.db.DaoManager;
 import com.demo.architecture.injection.component.AppComponent;
 import com.demo.architecture.injection.component.DaggerAppComponent;
 import com.demo.architecture.injection.module.AppModule;
 import com.demo.architecture.utils.ActivityUtil;
+import com.demo.architecture.utils.CrashExecptionHandler;
 import com.demo.architecture.utils.SPUtils;
+import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+
+import static com.just.library.LogUtils.isDebug;
 
 /*SampleApplication*/
 public class App extends Application {
@@ -31,14 +36,18 @@ public class App extends Application {
     }
 
     private void init() {
-        final App app = this;
+        if (isDebug()) {
+            ARouter.openLog();
+            ARouter.openDebug();
+        }
+        ARouter.init(this);
         //调试内存泄漏
-//        mRefWatcher = LeakCanary.install(this);
+        mRefWatcher = LeakCanary.install(this);
         //配置数据库
         mDB = new DBImpl(this);
         //Carsh捕获上传
-//        CrashExecptionHandler.getInstance().init(this);
-//        CrashExecptionHandler.getInstance().sendPreviousReportsToServer();
+        CrashExecptionHandler.getInstance().init(this);
+        CrashExecptionHandler.getInstance().sendPreviousReportsToServer();
         AppComponent appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
