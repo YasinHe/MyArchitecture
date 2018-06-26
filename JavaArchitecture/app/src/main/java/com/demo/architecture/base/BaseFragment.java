@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.util.LongSparseArray;
 import android.view.View;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.demo.architecture.api.HttpObservable;
 import com.demo.architecture.api.HttpObserver;
 import com.demo.architecture.injection.component.ConfigPersistentComponent;
@@ -65,6 +66,7 @@ public abstract class BaseFragment extends Fragment {
             configPersistentComponent = sComponentsArray.get(mFragmentId);
         }
         mFragmentComponent = configPersistentComponent.fragmentComponent(new FragmentModule(this));
+        ARouter.getInstance().inject(this);
     }
 
     protected void onViewCreated(View view){

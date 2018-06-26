@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.demo.architecture.R;
 import com.demo.architecture.api.HttpObservable;
 import com.demo.architecture.api.HttpObserver;
@@ -88,6 +89,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         activityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
         activityComponent.inject(this);
         setCustomDensity(this,ComponentHolder.getAppComponent().myApplication());
+        ARouter.getInstance().inject(this);
     }
 
     @Override

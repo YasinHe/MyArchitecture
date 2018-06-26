@@ -26,6 +26,7 @@ public class Constants {
     public static class SystemConfig{
         public static final String APP_NAME = "Text";
         public static boolean ISACTIVE = false;//是否在前台运行
+        public static final boolean isDebug = true;// 是否需要打印bug，可以在application的onCreate函数里面初始化
     }
 
     public static class EventBus{
@@ -44,7 +45,7 @@ public class Constants {
         //main
         public static final String MAIN_ACTIVITY = "/test/mainActivity";
 
-        //group
+        //group（页面分级）
         public static final String GROUP_ONE = "LEVEL1";
         public static final String GROUP_TWO = "LEVEL2";
         public static final String GROUP_THREE = "LEVEL3";

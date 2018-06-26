@@ -36,7 +36,8 @@ public class App extends Application {
     }
 
     private void init() {
-        if (isDebug()) {
+        //路由
+        if (Constants.SystemConfig.isDebug) {
             ARouter.openLog();
             ARouter.openDebug();
         }
@@ -45,13 +46,16 @@ public class App extends Application {
         mRefWatcher = LeakCanary.install(this);
         //配置数据库
         mDB = new DBImpl(this);
-        //Carsh捕获上传
-        CrashExecptionHandler.getInstance().init(this);
-        CrashExecptionHandler.getInstance().sendPreviousReportsToServer();
+        //注入
         AppComponent appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
         ComponentHolder.setAppComponent(appComponent);
+        //Carsh捕获上传
+        if(!Constants.SystemConfig.isDebug) {
+            CrashExecptionHandler.getInstance().init(this);
+            CrashExecptionHandler.getInstance().sendPreviousReportsToServer();
+        }
     }
 
     public void exitSystemEnterLogin(Context context) {
