@@ -1,17 +1,11 @@
 package com.demo.architecture.base;
 
-import android.app.Activity;
-import android.app.Application;
-import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.util.LongSparseArray;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +23,7 @@ import com.demo.architecture.injection.component.DaggerConfigPersistentComponent
 import com.demo.architecture.injection.module.ActivityModule;
 import com.demo.architecture.ui.main.MainActivity;
 import com.demo.architecture.utils.ActivityUtil;
+import com.demo.architecture.utils.AdaptationUi;
 import com.demo.architecture.utils.UtilTool;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -56,9 +51,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private AtomicLong NEXT_ID = new AtomicLong(0);
     private LongSparseArray<ConfigPersistentComponent> sComponentsArray = new LongSparseArray<ConfigPersistentComponent>();
     protected ActivityComponent activityComponent;
-    //屏幕适配
-    private static float sNoncompatDenisty;
-    private static float sNoncompatScaleDensity;
+    //屏幕适配(正常基本都是以宽度为主适配)
+    protected String adOrientation ="width"; // height / width
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +82,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         activityComponent = configPersistentComponent.activityComponent(new ActivityModule(this));
         activityComponent.inject(this);
-        setCustomDensity(this,ComponentHolder.getAppComponent().myApplication());
+        AdaptationUi.setOrientation(this,adOrientation);
         ARouter.getInstance().inject(this);
     }
 
@@ -237,38 +231,5 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         }
         compositeDisposable.add(consumer.getDisposable());
-    }
-
-    //适配方案
-    private static void setCustomDensity(@NonNull Activity activity, @NonNull final Application application){
-        final DisplayMetrics displayMetrics = application.getResources().getDisplayMetrics();
-        if(sNoncompatDenisty==0){
-            sNoncompatDenisty = displayMetrics.density;
-            sNoncompatScaleDensity  = displayMetrics.scaledDensity;
-            application.registerComponentCallbacks(new ComponentCallbacks() {
-                @Override
-                public void onConfigurationChanged(Configuration newConfig) {
-                    if(newConfig!=null&&newConfig.fontScale>0){
-                        sNoncompatScaleDensity = application.getResources().getDisplayMetrics().scaledDensity;
-                    }
-                }
-                @Override
-                public void onLowMemory() {
-                }
-            });
-        }
-
-        final float targeDensity = displayMetrics.widthPixels/360;//360dp是设计图宽
-        final float targetScaledDensity = targeDensity * (sNoncompatScaleDensity/sNoncompatDenisty);
-        final int targetDensityDpi = (int)(160 * targeDensity);
-
-        displayMetrics.density = targeDensity;
-        displayMetrics.scaledDensity = targetScaledDensity;
-        displayMetrics.densityDpi = targetDensityDpi;
-
-        final DisplayMetrics activityDisplayMetrics = activity.getResources().getDisplayMetrics();
-        activityDisplayMetrics.density = targeDensity;
-        activityDisplayMetrics.scaledDensity = targetScaledDensity;
-        activityDisplayMetrics.densityDpi = targetDensityDpi;
     }
 }

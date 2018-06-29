@@ -13,6 +13,7 @@ import com.demo.architecture.injection.component.AppComponent;
 import com.demo.architecture.injection.component.DaggerAppComponent;
 import com.demo.architecture.injection.module.AppModule;
 import com.demo.architecture.utils.ActivityUtil;
+import com.demo.architecture.utils.AdaptationUi;
 import com.demo.architecture.utils.CrashExecptionHandler;
 import com.demo.architecture.utils.SPUtils;
 import com.squareup.leakcanary.LeakCanary;
@@ -42,6 +43,8 @@ public class App extends Application {
             ARouter.openDebug();
         }
         ARouter.init(this);
+        //屏幕适配
+        AdaptationUi.setDensity(this);
         //调试内存泄漏
         mRefWatcher = LeakCanary.install(this);
         //配置数据库
