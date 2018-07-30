@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import butterknife.ButterKnife
-import com.mazouri.mvpkotlin.MVPApplication
 import com.mazouri.mvpkotlin.injection.component.ConfigPersistentComponent
 import com.mazouri.mvpkotlin.injection.component.DaggerConfigPersistentComponent
 import com.mazouri.mvpkotlin.injection.component.FragmentComponent
@@ -39,7 +38,7 @@ abstract class BaseFragment<C>: Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(layout, container, false)
+        val view = inflater.inflate(layout, container, false)
         ButterKnife.bind(this, view)
         return view
     }

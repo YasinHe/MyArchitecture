@@ -4,8 +4,8 @@ import com.mazouri.mvpkotlin.data.ApiSettings
 import com.mazouri.mvpkotlin.data.GithubServiceFactory
 import com.mazouri.mvpkotlin.data.model.Repository
 import com.mazouri.mvpkotlin.injection.ConfigPersistent
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -22,7 +22,7 @@ class MainPresenter @Inject constructor(): MainContract.Presenter() {
     override fun loadRepositories(repoUser: String?) {
         GithubServiceFactory.makeStarterService().getUserRepos(checkRepoUser(repoUser), REPOS_TYPE, ApiSettings.REPOS_SORT_BY_UPDATED)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .observeOn(mainThread())
                 .doOnError { view?.showError(it.toString()) }
                 .subscribe(
                         { onLoadReposSuccess(it) },

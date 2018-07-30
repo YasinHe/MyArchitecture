@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.util.LongSparseArray
 import android.support.v7.app.AppCompatActivity
 import butterknife.ButterKnife
-import com.mazouri.mvpkotlin.MVPApplication
 import com.mazouri.mvpkotlin.injection.component.ActivityComponent
 import com.mazouri.mvpkotlin.injection.component.ConfigPersistentComponent
 import com.mazouri.mvpkotlin.injection.component.DaggerConfigPersistentComponent
@@ -61,7 +60,6 @@ abstract class BaseActivity: AppCompatActivity(){
     }
 
     companion object {
-
         private val KEY_ACTIVITY_ID = "KEY_ACTIVITY_ID"
         private val NEXT_ID = AtomicLong(0)
         private val sComponentsArray = LongSparseArray<ConfigPersistentComponent>()

@@ -2,10 +2,10 @@ package com.mazouri.mvpkotlin.data
 
 import com.mazouri.mvpkotlin.data.model.Repository
 import com.mazouri.mvpkotlin.data.model.RepositoryDetail
+import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import rx.Observable
 
 /**
  * Created by HeYingXin on 2018/4/16.

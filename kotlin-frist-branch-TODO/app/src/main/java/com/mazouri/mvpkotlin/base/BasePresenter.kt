@@ -3,6 +3,7 @@ package com.mazouri.mvpkotlin.base
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
+
 //Kotlin 里类默认都是final的,如果声明的类允许被继承则需要使用open关键字来描述类
 //接口继承class Child : MyInterface{}
 /**
