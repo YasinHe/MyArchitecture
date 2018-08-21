@@ -60,6 +60,8 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:8.8.0"
 
     implementation 'com.jakewharton.timber:timber:4.7.0'
+    //新适配方案
+    implementation 'me.jessyan:autosize:0.7.0'
 }
 repositories {
     mavenCentral()
