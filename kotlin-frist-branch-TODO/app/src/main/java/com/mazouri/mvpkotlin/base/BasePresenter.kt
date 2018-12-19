@@ -1,5 +1,7 @@
 package com.mazouri.mvpkotlin.base
 
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import rx.Subscription
 import rx.subscriptions.CompositeSubscription
 
@@ -16,7 +18,7 @@ open class BasePresenter<T:IView> : IPresenter<T> {
     var view: T? = null
         private set // setter 是私有的并且有默认的实现
 
-    private val mCompositeSubscription = CompositeSubscription()
+    private val mCompositeSubscription = CompositeDisposable()//CompositeDisposable  CompositeSubscription
 
     override fun attachView(view: T) {
         this.view = view
@@ -25,7 +27,7 @@ open class BasePresenter<T:IView> : IPresenter<T> {
     override fun detachView() {
         view = null
 
-        if (!mCompositeSubscription.isUnsubscribed) {
+        if (!mCompositeSubscription.isDisposed) {
             mCompositeSubscription.clear()
         }
     }
@@ -38,7 +40,7 @@ open class BasePresenter<T:IView> : IPresenter<T> {
         if (!isViewAttached) throw ViewNotAttachedException()
     }
 
-    fun addSubscription(subs: Subscription) {
+    fun addSubscription(subs: Disposable) {
         mCompositeSubscription.add(subs)
     }
 
