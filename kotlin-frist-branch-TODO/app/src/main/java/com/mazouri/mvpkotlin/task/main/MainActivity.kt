@@ -15,6 +15,7 @@ import com.mazouri.mvpkotlin.base.BaseActivity
 import com.mazouri.mvpkotlin.base.ComponentHolder
 import com.mazouri.mvpkotlin.base.Constants
 import com.mazouri.mvpkotlin.data.model.Repository
+import com.mazouri.mvpkotlin.show
 import com.mazouri.mvpkotlin.utils.L
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject

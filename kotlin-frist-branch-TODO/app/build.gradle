@@ -81,8 +81,9 @@ dependencies {
     api "com.google.dagger:dagger:2.7"
     kapt "com.google.dagger:dagger-compiler:2.7"
 
-    api "com.jakewharton:butterknife:8.8.1"
-    kapt "com.jakewharton:butterknife-compiler:8.8.1"
+    //升级版利用插件直接使用view字段，不需要注解了
+//    api "com.jakewharton:butterknife:8.8.1"
+//    kapt "com.jakewharton:butterknife-compiler:8.8.1"
 
     implementation 'com.jakewharton.timber:timber:4.7.0'
     //新适配方案

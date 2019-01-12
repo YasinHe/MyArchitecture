@@ -3,7 +3,6 @@ package com.mazouri.mvpkotlin.base
 import android.os.Bundle
 import android.support.v4.util.LongSparseArray
 import android.support.v7.app.AppCompatActivity
-import butterknife.ButterKnife
 import com.mazouri.mvpkotlin.injection.component.ActivityComponent
 import com.mazouri.mvpkotlin.injection.component.ConfigPersistentComponent
 import com.mazouri.mvpkotlin.injection.component.DaggerConfigPersistentComponent
@@ -24,7 +23,6 @@ abstract class BaseActivity: AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout)
-        ButterKnife.bind(this)
 
         mActivityId = savedInstanceState?.getLong(KEY_ACTIVITY_ID) ?: NEXT_ID.getAndIncrement()
         val configPersistentComponent: ConfigPersistentComponent

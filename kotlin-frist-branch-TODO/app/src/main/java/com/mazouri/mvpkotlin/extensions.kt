@@ -2,6 +2,7 @@ package com.mazouri.mvpkotlin
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.mazouri.mvpkotlin.utils.T
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -14,5 +15,10 @@ fun String.formatDate(): String {
 
 inline fun <reified T> Gson.fromJson(json: String): T {
     return this.fromJson<T>(json, object: TypeToken<T>() {}.type)
+}
+
+//测试
+inline fun String.show(){
+    T.showShort(this)
 }
 
